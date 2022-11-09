@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  kong:
+    image: kong:2.5.0-alpine
+    hostname: kong
+    container_name: kong
+    environment:
+      KONG_DATABASE: "off"
+      KONG_PROXY_ACCESS_LOG: "/dev/stdout"
+      KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
+      KONG_PROXY_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+      KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yml"
+      command: "kong start"
+    ports:
+      - "80:8000"
+      - "8443:8443"
+      - "8001:8001"
+      - "8444:8444"
+    volumes:
+      - ./infrastructure-config:/opt/kong
+    depends_on:
+      - mongo
+    networks:
+      - leak
+
+  # rabbitmq:
+  #   # image: rabbitmq:3-management-alpine
+  #   image: heidiks/rabbitmq-delayed-message-exchange:latest
+  #   container_name: rabbitmq
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=admin
+  #     - RABBITMQ_DEFAULT_PASS=admin
+  #   ports:
+  #     - 5672:5672
+  #     - 15672:15672
+  #   volumes:
+  #     - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+  #     - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  #   networks:
+  #     - leak
+
+  mongo:
+    image: mongo
+    container_name: mongo-magictrust
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+    depends_on:
+      - rabbitmq
+    ports:
+      - 27018:27017
+    networks:
+      - leak
+
+networks:
+  leak:
+    driver: bridge
+volumes:
+  data1-1:
+  data1-2:
