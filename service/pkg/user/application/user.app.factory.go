@@ -1,4 +1,4 @@
-package app
+package application
 
 import (
 	"github/abraxas-365/Leak/pkg/user/domain/models"
@@ -7,6 +7,7 @@ import (
 
 type Application interface {
 	RegisterUser(igToken string, password string) (models.User, error)
+	LoginUser(username string, password string) (models.User, error)
 }
 
 type app struct {

@@ -25,6 +25,7 @@ func new(msg string, code int) Error {
 func GetError(err error) Error {
 	switch err.Error() {
 	case DocumentNotFound:
+		return new(err.Error(), 404)
 
 	case UserExist:
 		return new(err.Error(), 403)

@@ -28,3 +28,21 @@ func (h *handler) CallBackInstagram(c *fiber.Ctx) error {
 
 	return c.Status(201).JSON(token)
 }
+
+/**/
+func (h *handler) Login(c *fiber.Ctx) error {
+	login := models.Login{}
+	if err := c.BodyParser(&login); err != nil {
+		err := leakerrs.GetError(err)
+		c.Status(err.Code).JSON(err)
+	}
+
+	token, err := h.app.LoginUser(login)
+	fmt.Println(err)
+	if err != nil {
+		err := leakerrs.GetError(err)
+		return c.Status(err.Code).JSON(err)
+	}
+
+	return c.Status(201).JSON(token)
+}

@@ -8,6 +8,7 @@ import (
 
 type Handler interface {
 	CallBackInstagram(c *fiber.Ctx) error
+	Login(c *fiber.Ctx) error
 }
 
 type handler struct {

@@ -7,6 +7,7 @@ import (
 
 type Application interface {
 	RegisterWithInstagram(register models.RegisterWithPlatform) (string, error) //return jwt
+	LoginUser(login models.Login) (string, error)
 }
 
 type app struct {
