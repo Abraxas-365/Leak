@@ -27,7 +27,7 @@ func GetError(err error) Error {
 	case DocumentNotFound:
 		return new(err.Error(), 404)
 
-	case UserExist:
+	case DocumentExist:
 		return new(err.Error(), 403)
 
 	case InternalError:
@@ -42,7 +42,7 @@ func GetError(err error) Error {
 
 var (
 	DocumentNotFound = "Docuement not found"
-	UserExist        = "User Exist"
+	DocumentExist    = "Document Exist"
 	InternalError    = "Internal server err"
 	CantConnectToDB  = "Cant connect to db"
 )
