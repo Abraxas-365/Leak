@@ -1,31 +1,31 @@
 version: "3.9"
 
 services:
-  kong:
-    image: kong:2.5.0-alpine
-    hostname: kong
-    container_name: kong
-    environment:
-      KONG_DATABASE: "off"
-      KONG_PROXY_ACCESS_LOG: "/dev/stdout"
-      KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
-      KONG_PROXY_ERROR_LOG: "/dev/stderr"
-      KONG_ADMIN_ERROR_LOG: "/dev/stderr"
-      KONG_ADMIN_LISTEN: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
-      KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yml"
-      command: "kong start"
-    ports:
-      - "80:8000"
-      - "8443:8443"
-      - "8001:8001"
-      - "8444:8444"
-    volumes:
-      - ./infrastructure-config:/opt/kong
-    depends_on:
-      - mongo
-    networks:
-      - leak
-
+  # kong:
+  #   image: kong:2.5.0-alpine
+  #   hostname: kong
+  #   container_name: kong
+  #   environment:
+  #     KONG_DATABASE: "off"
+  #     KONG_PROXY_ACCESS_LOG: "/dev/stdout"
+  #     KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
+  #     KONG_PROXY_ERROR_LOG: "/dev/stderr"
+  #     KONG_ADMIN_ERROR_LOG: "/dev/stderr"
+  #     KONG_ADMIN_LISTEN: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+  #     KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yml"
+  #     command: "kong start"
+  #   ports:
+  #     - "80:8000"
+  #     - "8443:8443"
+  #     - "8001:8001"
+  #     - "8444:8444"
+  #   volumes:
+  #     - ./infrastructure-config:/opt/kong
+  #   depends_on:
+  #     - mongo
+  #   networks:
+  #     - leak
+  #
   # rabbitmq:
   #   # image: rabbitmq:3-management-alpine
   #   image: heidiks/rabbitmq-delayed-message-exchange:latest
@@ -44,7 +44,7 @@ services:
 
   mongo:
     image: mongo
-    container_name: mongo-magictrust
+    container_name: mongo-leak
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
@@ -54,6 +54,19 @@ services:
       - rabbitmq
     ports:
       - 27018:27017
+    networks:
+      - leak
+
+  leak:
+    environment:
+      MQ_URI: amqp://admin:admin@rabbitmq:5672/
+      MONGODB_URI: mongodb://root:example@mongo:27017/
+    build: ./service/.
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo
     networks:
       - leak
 
