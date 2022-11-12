@@ -8,6 +8,17 @@ func (a *app) FollowACrush(newFollow models.Follow) error {
 	if err != nil {
 		return err
 	}
+
+	//check if the crush is in follower list
+	follow, crushIsInFollowerList, err := a.repo.GetFollow(newFollow.Follower, newFollow.Crush)
+	if err != nil {
+		return err
+	} else if crushIsInFollowerList {
+		newFollow.IsInCrushList = true
+		follow.IsInCrushList = true
+		a.repo.UpdateFollow(follow)
+	}
+
 	if !exist {
 		if err := a.repo.CreateFollow(newFollow); err != nil {
 			return err

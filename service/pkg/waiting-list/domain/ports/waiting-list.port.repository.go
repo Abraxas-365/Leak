@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	CreateFollow(models.Follow) error
 	DeleteFollow(crushId uuid.UUID, follower uuid.UUID) error //find the follow filtering with bouth uuid
+	UpdateFollow(follow models.Follow) error
 	GetWaitingList(userId uuid.UUID) (models.WaitingList, error)
 	GetFollow(crushId uuid.UUID, followerId uuid.UUID) (models.Follow, bool, error)
 }

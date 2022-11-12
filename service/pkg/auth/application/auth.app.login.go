@@ -11,7 +11,7 @@ func (a *app) LoginUser(login models.Login) (string, error) {
 		return "", err
 	}
 
-	jwt, err := jwtauth.GereteToken(user.Id, user.InstagramToken)
+	jwt, err := jwtauth.GereteToken(user.Id, user.InstagramToken.Token)
 	if err != nil {
 		return "", err
 	}

@@ -12,7 +12,7 @@ func (a *app) RegisterWithInstagram(register models.RegisterWithPlatform) (strin
 		return "", err
 	}
 
-	token, err := jwtauth.GereteToken(user.Id, user.InstagramToken)
+	token, err := jwtauth.GereteToken(user.Id, user.InstagramToken.Token)
 	if err != nil {
 		return "", err
 	}

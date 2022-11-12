@@ -34,11 +34,11 @@ func (a *app) RegisterUser(igToken string, password string) (models.User, error)
 
 	//if user exist and isTaken return user exist
 	if user.IsTaken {
-		return models.User{}, errors.New(leakerrs.UserExist)
+		return models.User{}, errors.New(leakerrs.DocumentExist)
 	}
 	//if user exist and is not taken update to taken, updatePassword and return it
 	user.IsTaken = true
-	user.InstagramToken = igToken
+	user.InstagramToken.Token = igToken
 	user.Password = password
 	if err := a.userRepo.UpdateUser(user); err != nil {
 		return models.User{}, err

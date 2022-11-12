@@ -14,7 +14,7 @@ type User struct {
 	UserName       string    `bson:"username" json:"username"` //Same as IG user_name
 	Password       string    `bson:"password" json:"password"`
 	IsTaken        bool      `bson:"is_taken" json:"is_taken"` //if true the acount is reclamed
-	InstagramToken string    `bson:"ig_token" json:"ig_token"` //the oauth2 token for instagram
+	InstagramToken IgToken   `bson:"ig_token" json:"ig_token"` //the oauth2 token for instagram
 	CreationDate   time.Time `bson:"cration_date" json:"cration_date"`
 }
 
@@ -27,18 +27,21 @@ func NewUser(token string, password string) User {
 
 	//return user
 	return User{
-		Id:             uuid.New(),
-		CreationDate:   time.Now(),
-		InstagramToken: token,
-		IsTaken:        true,
-		Password:       password,
+		Id:           uuid.New(),
+		CreationDate: time.Now(),
+		InstagramToken: IgToken{
+			Token:         token,
+			GeneratedDate: time.Now(),
+		},
+		IsTaken:  true,
+		Password: password,
 	}
 
 }
 
 func (u *User) GetUsername() error {
 	//get username from instagram
-	resp, err := http.Get("https://graph.instagram.com/me?fields=id,username&access_token=" + u.InstagramToken)
+	resp, err := http.Get("https://graph.instagram.com/me?fields=id,username&access_token=" + u.InstagramToken.Token)
 	if err != nil {
 		return err
 	}

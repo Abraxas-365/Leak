@@ -73,3 +73,15 @@ func (r *repo) DeleteFollow(crushId uuid.UUID, followerId uuid.UUID) error {
 	}
 	return nil
 }
+
+/*Update Follow*/
+func (r *repo) UpdateFollow(follow models.Follow) error {
+	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
+	defer cancel()
+	collection := r.client.Database(r.database).Collection(r.collection)
+	if _, err := collection.UpdateByID(ctx, follow.Id, follow); err != nil {
+		return err
+	}
+
+	return nil
+}
